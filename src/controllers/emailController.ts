@@ -7,6 +7,8 @@ import { isUUID } from "validator";
 
 const prisma = new PrismaClient();
 
+const scheduledJobs: { [key: string]: cron.ScheduledTask } = {};
+
 const mailTransporter = nodemailer.createTransport({
   service: "gmail",
   auth: {
@@ -44,10 +46,10 @@ export const scheduleMail = async (req: Request, res: Response) => {
     // Schedule the email
     const scheduleJob = (emailData: typeof email) => {
       const cronExpression = getCronExpression(emailData);
-      cron.schedule(cronExpression, () => {
-        console.log("From cron ");
+      const job = cron.schedule(cronExpression, () => {
         sendEmail(emailData);
       });
+      scheduledJobs[emailData.id] = job;
     };
 
     scheduleJob(email);
@@ -155,5 +157,44 @@ export const getAllEmails = async (req: Request, res: Response) => {
   } catch (error) {
     console.error("Error scheduling email:", error);
     res.status(500).json({ error: "Failed to schedule email" });
+  }
+};
+
+export const deleteEmail = async (req: Request, res: Response) => {
+  const { id } = req.params;
+
+  if (!isUUID(id)) {
+    res.status(500).json({
+      message: "Invalid id format",
+    });
+  }
+
+  try {
+    // Find the email
+    const email = await prisma.email.findUnique({
+      where: { id },
+    });
+
+    if (!email) {
+      return res.status(404).json({ error: "Email not found" });
+    }
+
+    // Delete the email from the database
+    await prisma.email.delete({
+      where: { id },
+    });
+
+    console.log("This is cron job" + scheduledJobs);
+
+    // If there's a scheduled job for this email, stop and delete it
+    if (scheduledJobs[id]) {
+      scheduledJobs[id].stop();
+      delete scheduledJobs[id];
+    }
+
+    res.status(200).json({ message: "Email deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting email:", error);
+    res.status(500).json({ error: "Failed to delete email" });
   }
 };
