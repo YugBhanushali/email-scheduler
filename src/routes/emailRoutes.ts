@@ -1,8 +1,14 @@
 import { Router } from "express";
-import { scheduleMail } from "../controllers/emailController";
+import {
+  getAllEmails,
+  getEmail,
+  scheduleMail,
+} from "../controllers/emailController";
 
 const router = Router();
 
-router.post("/send-email", scheduleMail);
+router.post("/schedule-email", scheduleMail);
+router.get("/scheduled-emails/:id", getEmail);
+router.get("/scheduled-emails/", getAllEmails);
 
 export default router;
