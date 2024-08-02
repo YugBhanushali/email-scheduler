@@ -1,4 +1,4 @@
-Copy# Email Scheduler API
+# Email Scheduler API
 
 This project is an Express.js-based API for scheduling and managing emails. It uses Prisma as an ORM, PostgreSQL as the database, and node-cron for scheduling tasks.
 
@@ -55,14 +55,3 @@ This project is an Express.js-based API for scheduling and managing emails. It u
 - `GET /scheduled-emails/:id`: Get details of a specific scheduled email
 - `GET /scheduled-emails`: Get all scheduled emails
 - `DELETE /scheduled-emails/:id`: Delete a scheduled email
-
-## Usage Examples
-
-## API Endpoints
-
-| Method | Endpoint                | Description                                                                                                                             |
-| ------ | ----------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
-| POST   | `/schedule-email`       | Schedule a new email. Accepts recipient email, scheduled date/time, email body, subject, recurrence settings, and optional attachments. |
-| GET    | `/scheduled-emails/:id` | Retrieve details of a specific scheduled email using its ID.                                                                            |
-| GET    | `/scheduled-emails`     | Fetch a list of all scheduled emails.                                                                                                   |
-| DELETE | `/scheduled-emails/:id` | Cancel and delete a scheduled email using its ID. Also removes the associated cron job.                                                 |
