@@ -1,7 +1,7 @@
 import express, { Application } from "express";
-import emailRoutes from "./src/routes/emailRoutes";
+import emailRoutes from "./routes/emailRoutes";
 import morgan from "morgan";
-import errorHandler from "./src/middlewares/errorHandler";
+import errorHandler from "./middlewares/errorHandler";
 
 const app: Application = express();
 
